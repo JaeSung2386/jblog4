@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comment">
+	
+	<insert id="insert" parameterType="commentVo">
+		<![CDATA[
+			insert
+			into		comment
+			values		(null,
+						#{content},
+						now(),
+						#{post_no})
+		]]>
+	</insert>
+	
+	<select id="getList" parameterType="long" resultType="commentVo">
+		<![CDATA[
+			select		no,
+						content,
+						date_format(reg_date, '%Y/%m/%d') as reg_date,
+						post_no
+			from		comment
+			where		post_no = #{post_no}
+		]]>
+	</select>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="post">
+	
+	<select id="getTotalCount" parameterType="long" resultType="Integer">
+		<![CDATA[
+			select		count(*)
+			from		post
+			where 		category_no = #{category_no};
+		]]>
+	</select>
+
+	<select id="getList" parameterType="long" resultType="postVo">
+		<![CDATA[
+			select		p.no, 
+						p.title, 
+						p.content,
+						date_format(p.reg_date, '%Y/%m/%d') as reg_date
+			from		post p, category c
+			where		c.user_no = #{user_no}
+			and			c.no = p.category_no
+			order by	p.reg_date desc
+		]]>
+	</select>
+		
+	<select id="getCategoryList" parameterType="map" resultType="postVo">
+		<![CDATA[
+			select		p.no, 
+						p.title, 
+						p.content,
+						date_format(p.reg_date, '%Y/%m/%d') as reg_date
+			from		post p, category c
+			where		c.user_no = #{user_no}
+			and			c.no = #{category_no}
+			and			p.category_no = #{category_no}
+			order by	p.reg_date desc
+			limit		#{startRow}, #{endRow}
+		]]>
+	</select>
+	
+		
+	<select id="getPost" parameterType="map" resultType="postVo">
+		<![CDATA[
+			select		p.no, 
+						p.title, 
+						p.content,
+						date_format(p.reg_date, '%Y/%m/%d') as reg_date
+			from		post p, category c
+			where		c.user_no = #{user_no}
+			and			c.no = #{category_no}
+			and			p.category_no = #{category_no}
+		]]>
+		<if test="post_no != null">
+			and			p.no = #{post_no}
+		</if>
+		<if test="post_no == null">
+			order by	p.reg_date desc
+            limit		1;
+		</if>
+	</select>
+	
+	<insert id="insert" parameterType="postVo">
+		<![CDATA[
+			insert
+			into		post
+			values		(null,
+						#{title},
+						#{content},
+						now(),
+						#{category_no})
+		]]>
+	</insert>
+</mapper>
